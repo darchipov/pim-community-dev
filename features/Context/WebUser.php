@@ -1720,15 +1720,15 @@ class WebUser extends PimContext
      */
     public function iSwitchTheSubCategoriesInclusion($status)
     {
-        $switch = $this->spin(function () {
-            return $this->getCurrentPage()->findById('nested_switch_input');
-        }, 'Cannot find the switch button to include sub categories');
+        $this->spin(function () use ($status) {
+            $switch = $this->getCurrentPage()->findById('nested_switch_input');
 
-        $on = 'en' === $status;
-        if ($switch->isChecked() !== $on) {
-            $switch->getParent()->find('css', 'label')->click();
-        }
-        $this->wait();
+            if (('en' === $status) !== $switch->isChecked()) {
+                $switch->getParent()->find('css', 'label')->click();
+            }
+
+            return true;
+        }, sprintf('Cannot %sable the inclusion of sub-categories', $status));
     }
 
     /**
